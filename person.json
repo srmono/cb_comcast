@@ -1,0 +1,8 @@
+{
+    "name": "venkat",
+    "skills": [ "couchbase", "css", "java"],
+    "address": {
+        "city": "bangalore",
+        "pincode": 562125
+    }   
+}
