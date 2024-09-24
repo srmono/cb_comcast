@@ -1,8 +1,19 @@
-{
-    "name": "venkat",
-    "skills": [ "couchbase", "css", "java"],
-    "address": {
-        "city": "bangalore",
-        "pincode": 562125
-    }   
-}
+[
+    {
+        "doc_id": "person_01",
+        "name": "venkat",
+        "skills": [ "couchbase", "css", "java"],
+        "addr"
+    },
+    
+    {
+        "doc_id": "person_02",
+        "name": "snuti",
+        "age": 18,
+        "skills": [ "couchbase", "css", "java"],
+        "address": {
+            "city": "bangalore",
+            "pincode": 562125
+        }   
+    }
+]
