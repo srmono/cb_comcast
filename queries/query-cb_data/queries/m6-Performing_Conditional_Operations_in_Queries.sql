@@ -136,9 +136,9 @@ SELECT  {
                   },
          "grade" : "9",
          "hobbies": [
-                      {"Dance": {"Experience": 2, "Level": 2}},
-                      {"Music": {"Experience": 3, "Level": 1}},
-                      {"Sports": {"Experience": 1, "Level": 2}}
+                      {"Dance": {"Experience": 2, "`level`": 2}},
+                      {"Music": {"Experience": 3, "`level`": 1}},
+                      {"Sports": {"Experience": 1, "`level`": 2}}
                     ]     
         } 
 
@@ -194,9 +194,9 @@ INSERT INTO `student-sample` (key, value)
                   },
            "grade" : "7",
            "hobbies": [
-                       {"Dance": {"Experience": 2, "Level":2}},           
-                       {"Music": {"Experience": 3, "Level":1}},
-                       {"Sports": {"Experience": 1, "Level":2}}
+                       {"Dance": {"Experience": 2, "`level`":2}},           
+                       {"Music": {"Experience": 3, "`level`":1}},
+                       {"Sports": {"Experience": 1, "`level`":2}}
                       ]     
                   }
                  )
@@ -237,7 +237,7 @@ FROM `student-sample`;
 
 #########
 
-SELECT name, hobbies[1].Music.Experience, hobbies[1].Music.Level
+SELECT name, hobbies[1].Music.Experience, hobbies[1].Music.`level`
 FROM `student-sample`;
 
 ## Using array functions:
@@ -330,32 +330,34 @@ ELSE "no" END AS condition_satisfied
 
 ## Simple case expression
 
-SELECT level,
-       name, CASE (level >= 100) WHEN TRUE THEN "pro-player" ELSE "beginner" END AS tag
+SELECT `level`,
+       name, CASE (`level` >= 100) WHEN TRUE THEN "pro-player" ELSE "beginner" END AS tag
 FROM `gamesim-sample`
 
-SELECT level,
-       name, CASE level 
+SELECT `level`,
+       name, CASE `level` 
              WHEN 2 THEN "two" 
              WHEN 3 THEN "three" 
              WHEN 150 THEN "one-fifty"
-             ELSE "some other level"
+             ELSE "some other `level`"
              END AS tag
 FROM `gamesim-sample`;
 
-SELECT level,
+---
+
+SELECT `level`,
        name,
        loggedIn,
        CASE TRUE WHEN loggedIn=TRUE THEN "active_player" ELSE "inactive_player" END AS tag
 FROM `gamesim-sample`
 WHERE jsonType="player";
 
-SELECT level,
+SELECT `level`,
        name,
        loggedIn,
        CASE FALSE WHEN loggedIn THEN "active_player" ELSE "inactive_player" END AS tag
 FROM `gamesim-sample`
-WHERE jsonType="player";
+WHERE jsonType="player"; 
 
 ######
 
@@ -385,9 +387,9 @@ SELECT name,
 FROM `gamesim-sample`
 WHERE jsonType="monster";
 
-SELECT level,
-       name, CASE WHEN (level>=150) THEN "pro-player" 
-                  WHEN (level >= 100) THEN "intermediate"
+SELECT `level`,
+       name, CASE WHEN (`level`>=150) THEN "pro-player" 
+                  WHEN (`level` >= 100) THEN "intermediate"
                   ELSE "beginner" END AS tag
 FROM `gamesim-sample`
 WHERE jsonType = "player";
@@ -396,10 +398,10 @@ WHERE jsonType = "player";
 #######
 
 SELECT name,
-       level,
-       CASE WHEN `level` > 100 AND `experience` > 10000 THEN "reached_higer_level" 
-            WHEN `level` BETWEEN 50 AND 100 THEN "reached_medium_level" 
-            ELSE "keep_playing" END AS level_status
+       `level`,
+       CASE WHEN ``level`` > 100 AND `experience` > 10000 THEN "reached_higer_`level`" 
+            WHEN ``level`` BETWEEN 50 AND 100 THEN "reached_medium_`level`" 
+            ELSE "keep_playing" END AS `level`_status
 FROM `gamesim-sample`
 WHERE jsonType="player";
 
@@ -415,6 +417,8 @@ WHERE jsonType="player";
 SELECT IFMISSING(missing, "Couchbase", 100); 
 
 SELECT IFMISSING(null, "Couchbase", 100); #returns null
+
+
 
 ######
 
@@ -486,10 +490,10 @@ SELECT IFNAN("Couchbase", 1),   #returns null because 1st number is not a number
  
 ########
 
-SELECT IFNAN(level, "no_level")
+SELECT IFNAN(`level`, "no_`level`")
 FROM `gamesim-sample`
 WHERE jsonType="player";
-## All levels are numbers
+## All `level`s are numbers
  
 ######## 
 

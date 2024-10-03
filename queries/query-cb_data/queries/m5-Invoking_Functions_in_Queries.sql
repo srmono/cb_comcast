@@ -90,10 +90,10 @@ FROM `gamesim-sample`;
 SELECT COUNT(DISTINCT jsonType) AS distinct_jsonType 
 FROM `gamesim-sample`;
 
-SELECT COUNT(level) AS num_level
+SELECT COUNT(`level`) AS num_`level`
 FROM `gamesim-sample`;
 
-SELECT COUNT(DISTINCT level) AS distinct_level
+SELECT COUNT(DISTINCT `level`) AS distinct_`level`
 FROM `gamesim-sample`;
 
 ########
@@ -112,7 +112,7 @@ FROM `gamesim-sample`
 GROUP BY jsonType;
 
 SELECT jsonType,
-       COUNT(level)
+       COUNT(`level`)
 FROM `gamesim-sample`
 GROUP BY jsonType;
 
@@ -121,13 +121,13 @@ GROUP BY jsonType;
 #########
 
 SELECT COUNT(jsonType) AS type_count,
-       COUNT(level) AS level_count
+       COUNT(`level`) AS `level`_count
 FROM `gamesim-sample`
 ## Such queries are confusing
 
 
 SELECT COUNT(DISTINCT jsonType) AS type_count,
-       COUNT(DISTINCT level) AS level_count
+       COUNT(DISTINCT `level`) AS `level`_count
 FROM `gamesim-sample`
 
 # AVG and SUM
@@ -147,20 +147,20 @@ SELECT avg(hitpoints) AS avg_hitpoints
 FROM `gamesim-sample`
 WHERE jsonType="monster";   
 
-SELECT level, AVG(hitpoints) AS avg_hitpoints
+SELECT `level`, AVG(hitpoints) AS avg_hitpoints
 FROM `gamesim-sample`
 WHERE jsonType="player";   ## Error
 
-SELECT level, AVG(hitpoints) AS avg_hitpoints
+SELECT `level`, AVG(hitpoints) AS avg_hitpoints
 FROM `gamesim-sample`
 WHERE jsonType="player"
-GROUP BY level;
+GROUP BY `level`;
 
-SELECT level, AVG(hitpoints) AS avg_hitpoints
+SELECT `level`, AVG(hitpoints) AS avg_hitpoints
 FROM `gamesim-sample`
 WHERE jsonType="player"
-GROUP BY level
-ORDER BY level;
+GROUP BY `level`
+ORDER BY `level`;
 
 ##########
 
@@ -185,15 +185,15 @@ WHERE jsonType="item";
 
 ########
 
-SELECT level, MAX(hitpoints) AS max_hitpoints
+SELECT `level`, MAX(hitpoints) AS max_hitpoints
 FROM `gamesim-sample`
 WHERE jsonType="player"
-GROUP BY level;
+GROUP BY `level`;
 
-SELECT level, MAX(hitpoints) AS max_hitpoints, COUNT(hitpoints) AS count_hitpoints
+SELECT `level`, MAX(hitpoints) AS max_hitpoints, COUNT(hitpoints) AS count_hitpoints
 FROM `gamesim-sample`
 WHERE jsonType="player"
-GROUP BY level;
+GROUP BY `level`;
 
 #########
 
@@ -211,11 +211,11 @@ WHERE jsonType="player";
 
 ########
 
-SELECT level, MIN(hitpoints) AS min_hitpoints, 
+SELECT `level`, MIN(hitpoints) AS min_hitpoints, 
        MAX(hitpoints) AS max_hitpoints, COUNT(hitpoints) AS count_hitpoints
 FROM `gamesim-sample`
 WHERE jsonType="player" 
-GROUP BY level;
+GROUP BY `level`;
 
 
 #Aggregate functions
@@ -223,17 +223,17 @@ GROUP BY level;
 #ARRAY_AGG
 
 
-SELECT DISTINCT level
+SELECT DISTINCT `level`
 FROM `gamesim-sample`; # there are null values
 
 #######
 
-SELECT ARRAY_AGG(level) 
+SELECT ARRAY_AGG(`level`) 
 FROM `gamesim-sample`; 
 
 #######
 
-SELECT ARRAY_AGG(DISTINCT level) 
+SELECT ARRAY_AGG(DISTINCT `level`) 
 FROM `gamesim-sample`; 
 
 #######
@@ -336,7 +336,7 @@ SELECT SQRT(625)
 # String functions
 ######## 
 
-SELECT name, level
+SELECT name, `level`
 FROM `gamesim-sample`
 WHERE CONTAINS(name, "Br");
 
@@ -451,90 +451,90 @@ ORDER BY number_of_items DESC;
 #######
 #HAVING clauses
 
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
-GROUP BY level;
+GROUP BY `level`;
 
-SELECT jsonType, level, AVG(experience) AS avg_experience
+SELECT jsonType, `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
-GROUP BY level; #Error
+GROUP BY `level`; #Error
 
-SELECT jsonType, level, AVG(experience) AS avg_experience
+SELECT jsonType, `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
-GROUP BY jsonType, level; ## Only players have these fields so add in the WHERE clause
+GROUP BY jsonType, `level`; ## Only players have these fields so add in the WHERE clause
 
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
 WHERE jsonType="player" 
-GROUP BY level
-ORDER BY level;
+GROUP BY `level`
+ORDER BY `level`;
 
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
-WHERE jsonType="player" and level > 100
-GROUP BY level
-ORDER BY level;
+WHERE jsonType="player" and `level` > 100
+GROUP BY `level`
+ORDER BY `level`;
 
 
-SELECT level, AVG(experience) AS avg_experience
-FROM `gamesim-sample`
-WHERE jsonType="player"
-GROUP BY level
-ORDER BY level
-HAVING level > 100; # Error
-
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
 WHERE jsonType="player"
-GROUP BY level
-HAVING level > 100 
-ORDER BY level; # Seems to do the same thing as what is in the WHERE clause
+GROUP BY `level`
+ORDER BY `level`
+HAVING `level` > 100; # Error
 
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
+FROM `gamesim-sample`
+WHERE jsonType="player"
+GROUP BY `level`
+HAVING `level` > 100 
+ORDER BY `level`; # Seems to do the same thing as what is in the WHERE clause
+
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
 WHERE jsonType="player" AND avg_experience > 12000
-GROUP BY level
-ORDER BY level; # Warning does not do what we expect, hover over the warning
+GROUP BY `level`
+ORDER BY `level`; # Warning does not do what we expect, hover over the warning
 
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
 WHERE jsonType="player" AND AVG(experience) > 12000
-GROUP BY level
-ORDER BY level; # This is an error
+GROUP BY `level`
+ORDER BY `level`; # This is an error
 
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
 WHERE jsonType="player" 
-GROUP BY level
+GROUP BY `level`
 HAVING avg_experience > 12000 # This does not work
-ORDER BY level;
+ORDER BY `level`;
 
-SELECT level, AVG(experience) AS avg_experience
+SELECT `level`, AVG(experience) AS avg_experience
 FROM `gamesim-sample`
 WHERE jsonType="player" 
-GROUP BY level
+GROUP BY `level`
 HAVING AVG(experience) > 12000 # Works!
-ORDER BY level;
+ORDER BY `level`;
 
-SELECT level, AVG(experience) AS avg_experience, AVG(hitpoints) AS avg_hitpoints
+SELECT `level`, AVG(experience) AS avg_experience, AVG(hitpoints) AS avg_hitpoints
 FROM `gamesim-sample`
-WHERE jsonType="player" and level > 100
-GROUP BY level
-ORDER BY level;
+WHERE jsonType="player" and `level` > 100
+GROUP BY `level`
+ORDER BY `level`;
 
-SELECT level, AVG(experience) AS avg_experience, AVG(hitpoints) AS avg_hitpoints
+SELECT `level`, AVG(experience) AS avg_experience, AVG(hitpoints) AS avg_hitpoints
 FROM `gamesim-sample`
-WHERE jsonType="player" and level > 100
-GROUP BY level
+WHERE jsonType="player" and `level` > 100
+GROUP BY `level`
 HAVING AVG(experience) > 18000
-ORDER BY level;
+ORDER BY `level`;
 
-SELECT level, AVG(experience) AS avg_experience, AVG(hitpoints) AS avg_hitpoints
+SELECT `level`, AVG(experience) AS avg_experience, AVG(hitpoints) AS avg_hitpoints
 FROM `gamesim-sample`
-WHERE jsonType="player" and level > 100
-GROUP BY level
+WHERE jsonType="player" and `level` > 100
+GROUP BY `level`
 HAVING AVG(experience) > 18000 and AVG(hitpoints) > 25000
-ORDER BY level;
+ORDER BY `level`;
 
 ######
 SELECT ownerId AS player, count(name) AS number_of_items

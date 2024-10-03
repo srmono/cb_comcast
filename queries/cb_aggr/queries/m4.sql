@@ -59,7 +59,7 @@ LEFT NEST `ordersbucket` ob
 ON ob.customer_id = cb.customer_id;
 
 
-# There's no such thing as a RIGHT nest
+# Theres no such thing as a RIGHT nest
 SELECT cb.customer_name, cb.country, 
        ob[*].order_id, ob[*].order_items
 FROM `customersbucket` cb

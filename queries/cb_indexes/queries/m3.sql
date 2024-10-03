@@ -41,7 +41,7 @@ CREATE INDEX `travel_type`
 ON `travel-sample`(`type`) 
 WITH { "defer_build":true };
 
-BUILD INDEX ON `travel-sample`("travel_type") 
+BUILD INDEX ON `travel-sample`("travel_type")
 USING GSI; # to make it online
 
 ## Re-run the query to confirm the execution time improves
