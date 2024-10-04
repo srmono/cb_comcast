@@ -4,7 +4,6 @@
 ##    Getting_started_with_N1QL
 
 
-
 ###########  Quering_data_using_SELECT_FROM_and_WHERE_statments
 
 # go to query
