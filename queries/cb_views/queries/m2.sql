@@ -172,7 +172,7 @@ function (doc, meta)
 #############################################
 
 ## Copy the URL generted for the view (right-click --> Copy Link Address)
-## Paste it in a browser's address bar 
+## Paste it in a browsers address bar 
 ## You may be prompted for user credentials - enter those of your Couchbase user
 ## The output of the map view should be visible
 
