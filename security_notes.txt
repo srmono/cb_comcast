@@ -1,0 +1,238 @@
+Inspect docker node
+
+	docker inspect node_name 
+
+Cnode1:  172.17.0.2
+cnode2:  172.17.0.3
+
+Adding/Enaling Node to node Encryption
+
+Disable autofailover
+
+step1: 
+	docker exec -it cnode1 bash
+step2: 
+	/opt/couchbase/bin/couchbase-cli setting-autofailover -c http://127.0.0.1:8091 -u admin -p 123456 --enable-auto-failover 0
+
+step3: enable encription
+
+/opt/couchbase/bin/couchbase-cli node-to-node-encryption -c http://127.0.0.1:8091 -u admin -p 123456 --enable
+
+step3: enable auto failover
+/opt/couchbase/bin/couchbase-cli setting-autofailover -c http://127.0.0.1:8091 -u admin -p 123456 --enable-auto-failover 1 --auto-failover-timeout 120
+
+-------------------------------------------------
+
+Custom CA Certification
+
+## Turn Off autofailover
+```
+/opt/couchbase/bin/couchbase-cli setting-autofailover -c http://127.0.0.1:8091 -u admin -p 123456 --enable-auto-failover 0
+```
+
+## Disale node to node encryption
+```
+/opt/couchbase/bin/couchbase-cli node-to-node-encryption -c http://127.0.0.1:8091 -u admin -p 123456 --disable
+```
+
+## Remove all nodes from cluster
+
+## Creating certificate
+
+cd ~
+touch ~/.rnd
+mkdir servercertfiles
+cd servercertfiles
+mkdir -p {public,private,requests}
+
+openssl genrsa --out caprivkey.key 2048
+
+cat caprivkey.key
+
+openssl req -new -x509 \
+-days 365 \
+-sha256 \
+-key caprivkey.key \
+-out cacert.pem \
+-subj "/CN=admin Root CA"
+
+
+Fetch public key info
+openssl x509 -in ./cacert.pem -noout -pubkey
+
+Fetch subject and serial info from ca cert
+openssl x509 -in ./cacert.pem -noout -subject -serial
+
+
+view as a text
+openssl x509 -in ./cacert.pem -noout -text
+
+## create cert for one of the nodes 
+openssl genrsa -out private/couchbase.node1.key 2048
+
+cat private/couchbase.node1.key
+
+## gen a csr 
+openssl req -new \
+-key private/couchbase.node1.key \
+-out requests/couchbase.node1.csr \
+-subj "/CN=Couchbase Server 01"
+
+## verify csr
+
+openssl req -in ./requests/couchbase.node1.csr \
+-noout \
+-text \
+-verify
+
+## create cert extensions file (sign this CSR with  Root CA)
+cat > server.ext <<EOF
+basicConstraints=CA:FALSE
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+extendedKeyUsage=serverAuth
+keyUsage = digitalSignature,keyEncipherment
+EOF
+
+cp /server.ext ./server-01.ext.tmp
+
+echo "subjectAltName = IP:172.17.0.2" >> server-01.ext.tmp
+
+
+## Gen Cert
+openssl x509 -req \
+-CA cacert.pem \
+-CAkey caprivkey.key \
+-CAcreateserial -days 365 \
+-in requests/couchbase.node1.csr \
+-out public/couchbase.node-01.pem \
+-extfile server-01.ext.tmp
+
+
+## view cert
+openssl x509 -in ./public/couchbase.node-01.pem \
+-noout \
+-text
+
+root CA
+	cacert.pem
+	caprivkey.key
+
+node 
+	private key:	couchbase.node1.key
+	csr		couchbase.node1.csr
+	extenstion >> tmp
+cert 
+	
+
+
+# Install certficate
+
+## 
+sudo mkdir /opt/couchbase/var/lib/couchbase/inbox
+
+sudo cp public/couchbase.node-01.pem /opt/couchbase/var/lib/couchbase/inbox/chain.pem
+
+chmod a+x /opt/couchbase/var/lib/couchbase/inbox/chain.pem
+
+
+sudo cp private/couchbase.node1.key /opt/couchbase/var/lib/couchbase/inbox/pkey.key
+
+chmod a+x /opt/couchbase/var/lib/couchbase/inbox/pkey.key
+
+chown -R couchbase:couchbase /opt/couchbase/var/lib/couchbase/inbox/
+
+
+curl -X POST --data-binray "@.cacert.pem" \
+http://admin:123456@127.0.0.1:8091/controller/uploadClusterCA
+
+
+curl -X POST --data-binary "@./cacert.pem" http://127.0.0.1:8091/controller/uploadClusterCA -u admin:123456
+
+
+
+curl -X POST http://127.0.0.1:8091/node/controller/reloadCertificate -u admin:123456
+
+
+------------------
+
+New node 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+gui
+
+cli
+rest api
+
+
+node reboot shotterm/time
+
+
+docker stop node
+docker start node
+
+
+
+
+
+
+
+
+cluster  
+
+	nodes 		adding/removing
+	services	adding/removing
+	data		adding/removing
+
+100 docs 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
