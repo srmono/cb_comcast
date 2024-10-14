@@ -153,10 +153,35 @@ curl -X POST --data-binary "@./cacert.pem" http://127.0.0.1:8091/controller/uplo
 
 curl -X POST http://127.0.0.1:8091/node/controller/reloadCertificate -u admin:123456
 
+Note: Enable node to node encryption
+
 
 ------------------
 
 New node 
+
+ cp ./server.ext ./server-02.ext.tmp
+ echo "subjectAltName = IP:172.17.0.3" >> ./server-02.ext.tmp
+
+ openssl genrsa -out private/couchbase.node2.key 2048 
+
+CSR: 
+ openssl req -new \
+-key private/couchbase.node2.key \
+-out requests/couchbase.node2.csr \
+-subj "/CN=Couchbase Server 02"
+
+Generate cert:
+
+openssl x509 -req \
+-CA cacert.pem \
+-CAkey caprivkey.key \
+-CAcreateserial -days 365 \
+-in requests/couchbase.node2.csr \
+-out public/couchbase.node-02.pem \
+-extfile server-02.ext.tmp
+
+
 
 
 
@@ -211,6 +236,10 @@ cluster
 	data		adding/removing
 
 100 docs 
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 
