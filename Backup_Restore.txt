@@ -1,0 +1,157 @@
+
+
+CB WorkloadGen 
+Capacity Estimation 
+
+CB Import social.json
+	? 45% data inserted rest is failed
+	skip 
+	
+
+
+Backup & Recovery and XDCR Recovery
+
+Docker Conatiner s
+
+2 containers 
+	1 node local cluster
+	1 node remote cluster
+
+
+cbexport json --cluster couchbase://localhost --username admin --password '123456' --bucket student-schools --format lines --out
+put  ./student-data.json
+
+
+cbexport json --cluster couchbases://cb.zjhxs-12ab3cd4e5.cloud.couchbase.com --username dbuser --password '******' --bucket travel-sample --format lines --output  /home/someuser/travel-sample-export.json --scope-field myscopefield --collection-field mycollectionfield --include-key doc_key --cacert /root/capella.pem
+
+
+2. Backup cluster  with cbbackupmgr 
+
+Config:
+/opt/couchbase/bin/cbbackupmgr config --archive /home/root/data/backup --repo myclusterbackup
+
+Actual Backup:
+/opt/couchbase/bin/cbbackupmgr backup \
+--archive /home/root/data/backup \
+--repo myclusterbackup \
+--cluster couchbase://localhost \
+-u admin -p 123456
+
+View Backup:
+/opt/couchbase/bin/cbbackupmgr info \
+--archive /home/root/data/backup
+
+Incremental backup: execute same command 
+
+/opt/couchbase/bin/cbbackupmgr backup \
+--archive /home/root/data/backup \
+--repo myclusterbackup \
+--cluster couchbase://localhost \
+-u admin -p 123456
+
+Compact and backup 
+
+/opt/couchbase/bin/cbbackupmgr compact\
+--archive /home/root/data/backup \
+--repo myclusterbackup \
+--backup 2024-10-15T05_50_08.2473937Z
+
+
+Merge Backup: 
+sample backups:
+	2024-10-15T05_50_08.2473937Z
+	2024-10-15T06_50_08.2473937Z
+	2024-10-15T07_50_08.2473937Z
+	2024-10-15T08_50_08.2473937Z
+
+/opt/couchbase/bin/cbbackupmgr merge\
+--archive /home/root/data/backup \
+--repo myclusterbackup \
+--start 2024-10-15T06_50_08.2473937Z
+--end 2024-10-15T08_50_08.2473937Z
+
+final:
+2024-10-15T05_50_08.2473937Z
+2024-10-15T11_50_08.2473937Z
+	
+
+
+Restore from Backup Manager into  cluster:
+
+New local machine/VM
+
+
+cluster 1
+
+config:
+/opt/couchbase/bin/cbbackupmgr config \
+--archive /home/root/data/backup \
+--repo studentBackup \
+--include-buckets student-schools \
+--disable-views \
+--disable-ft-indexes \
+--disable-analaytics 
+
+/opt/couchbase/bin/cbbackupmgr backup \
+--archive /home/root/data/backup \
+--repo studentBackup \
+--cluster couchbase://localhost \
+-u admin -p 123456
+
+Restore :
+
+/opt/couchbase/bin/cbbackupmgr restore \
+--repo studentBackup
+--cluster couchbase://localhost \
+-u admin -p 123456
+
+
+
+XDCR Recovery:
+
+/opt/couchbase/bin/cbrecovery \
+http://171.17.0.2:8091 \
+http://171.17.0.4:8091 \
+-b student-schools-remote \
+-B student-schools \
+-u admin -p 123456
+-U admin -P 654321
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CB Vector Search
+CB Capella AI
+
