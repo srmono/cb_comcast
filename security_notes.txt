@@ -158,7 +158,7 @@ Note: Enable node to node encryption
 
 ------------------
 
-New node 
+For New node 
 
  cp ./server.ext ./server-02.ext.tmp
  echo "subjectAltName = IP:172.17.0.3" >> ./server-02.ext.tmp
@@ -182,68 +182,45 @@ openssl x509 -req \
 -extfile server-02.ext.tmp
 
 
+Copy generated cert files into new node then install 
+
+
+ docker cp cnode1:/root/servercertfiles/cacert.pem C:\temp_files
+ docker cp C:\temp_files\ cnode2:~/
+
+docker exec -it cnode1 bash
+cd /root/servercertfiles
+
+tar czf myarchive.tar.gz *
+
+
+Installation: 
+
+docker exec -it cnode2 bash
+
+sudo mkdir /opt/couchbase/var/lib/couchbase/inbox
+
+sudo cp public/couchbase.node-02.pem /opt/couchbase/var/lib/couchbase/inbox/chain.pem
+
+chmod a+x /opt/couchbase/var/lib/couchbase/inbox/chain.pem
+
+
+sudo cp private/couchbase.node2.key /opt/couchbase/var/lib/couchbase/inbox/pkey.key
+
+chmod a+x /opt/couchbase/var/lib/couchbase/inbox/pkey.key
+
+chown -R couchbase:couchbase /opt/couchbase/var/lib/couchbase/inbox/
+
+
+curl -X POST --data-binray "@.cacert.pem" \
+http://admin:123456@127.0.0.1:8091/controller/uploadClusterCA
+
+
+curl -X POST --data-binary "@./cacert.pem" http://127.0.0.1:8091/controller/uploadClusterCA -u admin:123456
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-gui
-
-cli
-rest api
-
-
-node reboot shotterm/time
-
-
-docker stop node
-docker start node
-
-
-
-
-
-
-
-
-cluster  
-
-	nodes 		adding/removing
-	services	adding/removing
-	data		adding/removing
-
-100 docs 
-
-
------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
+curl -X POST http://127.0.0.1:8091/node/controller/reloadCertificate -u admin:123456
 
 
 
